@@ -27,6 +27,7 @@ server <- shinyServer(function(input, output) {
             return(NULL)
         df <- read.csv(inFile$datapath, header = TRUE,sep=",")
         write.csv(df, "cases.csv", row.names=FALSE)
+        system("python3 hello_world.py")
         return(df)
     })
     
