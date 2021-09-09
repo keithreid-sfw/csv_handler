@@ -4,13 +4,15 @@ library(DT)
 # Define UI
 ui <- shinyUI(fluidPage(
     
-    fileInput('target_upload', 'Choose file to upload',
+    # user interface control
+    fileInput('path_upload', 'Choose cases file to upload',
               accept = c(
                   'text/csv',
                   'text/comma-separated-values',
                   '.csv'
               )),
-    radioButtons("separator","Separator: ",choices = c(";",",",":"), selected=";",inline=TRUE),
+    
+    # user interface view
     DT::dataTableOutput("sample_table")
 )
 )
@@ -18,17 +20,19 @@ ui <- shinyUI(fluidPage(
 # Define server logic
 server <- shinyServer(function(input, output) {
     
-    df_products_upload <- reactive({
-        inFile <- input$target_upload
+    # server control
+    products_upload <- reactive({
+        inFile <- input$path_upload
         if (is.null(inFile))
             return(NULL)
-        df <- read.csv(inFile$datapath, header = TRUE,sep = input$separator)
-        write.csv(df, "predictands.csv", row.names=FALSE)
+        df <- read.csv(inFile$datapath, header = TRUE,sep=",")
+        write.csv(df, "cases.csv", row.names=FALSE)
         return(df)
     })
     
+    # server view
     output$sample_table<- DT::renderDataTable({
-        df <- df_products_upload()
+        df <- products_upload()
         DT::datatable(df)
     })
     
